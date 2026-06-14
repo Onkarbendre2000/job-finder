@@ -1,0 +1,164 @@
+{
+  "name": "Onkar Bendre",
+  "headline": "Software Development Engineer with Amazon-scale distributed systems, backend/platform, AWS, and React/TypeScript experience.",
+  "target_roles": [
+    "Software Development Engineer",
+    "Software Engineer",
+    "Backend Engineer",
+    "Senior Backend Engineer",
+    "Platform Engineer",
+    "Senior Software Engineer",
+    "Full Stack Engineer",
+    "Cloud Engineer"
+  ],
+  "preferred_locations": [
+    "Dublin",
+    "Ireland",
+    "London",
+    "Edinburgh",
+    "United Kingdom",
+    "Berlin",
+    "Munich",
+    "Germany",
+    "Madrid",
+    "Barcelona",
+    "Spain",
+    "Stockholm",
+    "Sweden",
+    "Amsterdam",
+    "Netherlands",
+    "Remote Europe",
+    "Remote - Europe",
+    "EMEA"
+  ],
+  "skills": {
+    "core": [
+      "Java",
+      "AWS",
+      "DynamoDB",
+      "distributed systems",
+      "microservices",
+      "REST APIs",
+      "backend",
+      "system design",
+      "scalability",
+      "observability",
+      "CI/CD"
+    ],
+    "secondary": [
+      "React",
+      "TypeScript",
+      "JavaScript",
+      "Spring Boot",
+      "Kubernetes",
+      "Kafka",
+      "OpenSearch",
+      "CloudWatch",
+      "Lambda",
+      "serverless",
+      "payments",
+      "fintech"
+    ]
+  },
+  "must_have_signals": [
+    "visa sponsorship",
+    "relocation",
+    "hybrid",
+    "remote",
+    "backend",
+    "platform"
+  ],
+  "visa_keywords": [
+    "visa sponsorship",
+    "sponsorship available",
+    "work permit",
+    "skilled worker visa",
+    "blue card",
+    "eu blue card",
+    "relocation support",
+    "relocation package",
+    "immigration support",
+    "sponsor visas"
+  ],
+  "positive_keywords": [
+    "distributed systems",
+    "high scale",
+    "scalable",
+    "aws",
+    "cloud",
+    "platform",
+    "backend",
+    "payments",
+    "fintech",
+    "observability",
+    "microservices",
+    "ownership",
+    "java",
+    "typescript",
+    "react"
+  ],
+  "blocked_keywords": [
+    "intern",
+    "internship",
+    "graduate",
+    "new grad",
+    "working student",
+    "apprentice",
+    "qa engineer",
+    "data scientist",
+    "machine learning scientist",
+    "product manager",
+    "engineering manager",
+    "sales engineer",
+    "solutions engineer"
+  ],
+  "seniority_review_keywords": [
+    "staff",
+    "principal",
+    "director",
+    "head of",
+    "vp"
+  ],
+  "resume_versions": {
+    "backend-platform": [
+      "Java",
+      "AWS",
+      "DynamoDB",
+      "distributed systems",
+      "microservices",
+      "backend",
+      "APIs",
+      "observability"
+    ],
+    "fullstack": [
+      "React",
+      "TypeScript",
+      "Java",
+      "AWS",
+      "customer-facing applications",
+      "frontend",
+      "backend"
+    ],
+    "infra-cloud": [
+      "AWS",
+      "CI/CD",
+      "observability",
+      "CloudWatch",
+      "Lambda",
+      "OpenSearch",
+      "platform",
+      "cloud"
+    ]
+  },
+  "scoring_weights": {
+    "title": 25,
+    "skills": 35,
+    "location": 20,
+    "visa": 10,
+    "company_priority": 10
+  },
+  "decision_thresholds": {
+    "apply": 70,
+    "review": 55
+  }
+}
