@@ -16,7 +16,9 @@ def main() -> None:
     args = parse_args()
     profile = load_json(args.profile)
     sources_config = load_json(args.sources)
-    sources = [Source(**item) for item in sources_config.get("sources", [])]
+    all_sources = [Source(**item) for item in sources_config.get("sources", [])]
+    sources = [source for source in all_sources if source.enabled]
+    disabled_sources = [source for source in all_sources if not source.enabled]
 
     jobs, errors = collect_all(sources)
     scored = score_jobs(jobs, profile, sources)
@@ -29,6 +31,7 @@ def main() -> None:
     metadata = {
         "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "source_count": len(sources),
+        "disabled_source_count": len(disabled_sources),
         "job_count": len(jobs),
         "scored_count": len(scored),
         "errors": errors,
@@ -38,7 +41,9 @@ def main() -> None:
     write_csv(scored, output_dir / "jobs.csv")
     render_dashboard(scored, output_dir / "index.html", metadata=metadata)
 
-    print(f"Scanned {len(jobs)} jobs from {len(sources)} sources")
+    print(f"Scanned {len(jobs)} jobs from {len(sources)} enabled sources")
+    if disabled_sources:
+        print(f"Skipped {len(disabled_sources)} disabled/unverified sources")
     print(f"Wrote {output_dir / 'index.html'}")
     print(f"Decisions: APPLY={count(scored, 'APPLY')} REVIEW={count(scored, 'REVIEW')} SKIP={count(scored, 'SKIP')}")
     if errors:
