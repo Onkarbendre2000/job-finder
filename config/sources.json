@@ -1,0 +1,29 @@
+{
+  "sources": [
+    {"company": "Intercom", "type": "greenhouse", "slug": "intercom", "priority": 5},
+    {"company": "Stripe", "type": "greenhouse", "slug": "stripe", "priority": 5},
+    {"company": "Datadog", "type": "greenhouse", "slug": "datadog", "priority": 5},
+    {"company": "HubSpot", "type": "greenhouse", "slug": "hubspot", "priority": 5},
+    {"company": "Contentful", "type": "greenhouse", "slug": "contentful", "priority": 4},
+    {"company": "Elastic", "type": "greenhouse", "slug": "elastic", "priority": 4},
+    {"company": "Personio", "type": "greenhouse", "slug": "personio", "priority": 4},
+    {"company": "GetYourGuide", "type": "greenhouse", "slug": "getyourguide", "priority": 4},
+    {"company": "Miro", "type": "greenhouse", "slug": "miro", "priority": 4},
+    {"company": "Wise", "type": "greenhouse", "slug": "wise", "priority": 4},
+    {"company": "Adyen", "type": "greenhouse", "slug": "adyen", "priority": 4},
+    {"company": "Monzo", "type": "greenhouse", "slug": "monzo", "priority": 4},
+    {"company": "N26", "type": "greenhouse", "slug": "n26", "priority": 3},
+    {"company": "Trade Republic", "type": "greenhouse", "slug": "traderepublic", "priority": 3},
+    {"company": "Klarna", "type": "greenhouse", "slug": "klarna", "priority": 3},
+    {"company": "Holidu", "type": "greenhouse", "slug": "holidu", "priority": 3},
+    {"company": "Skyscanner", "type": "greenhouse", "slug": "skyscanner", "priority": 3},
+    {"company": "Celonis", "type": "greenhouse", "slug": "celonis", "priority": 4},
+    {"company": "Revolut", "type": "greenhouse", "slug": "revolut", "priority": 3},
+    {"company": "Booking.com", "type": "greenhouse", "slug": "bookingcom", "priority": 4},
+    {"company": "Anthropic", "type": "ashby", "slug": "anthropic", "priority": 3},
+    {"company": "Supabase", "type": "ashby", "slug": "supabase", "priority": 3},
+    {"company": "Tailscale", "type": "ashby", "slug": "tailscale", "priority": 3},
+    {"company": "Vercel", "type": "ashby", "slug": "vercel", "priority": 3},
+    {"company": "Modal", "type": "ashby", "slug": "modal", "priority": 2}
+  ]
+}
