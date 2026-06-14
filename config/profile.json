@@ -1,24 +1,34 @@
 {
   "name": "Onkar Bendre",
   "headline": "Software Development Engineer with Amazon-scale distributed systems, backend/platform, AWS, and React/TypeScript experience.",
+  "eu_only": true,
+  "target_seniority": "SDE2 to SDE3 only. Skip Staff, Principal, Manager, Director, Intern, Graduate, and Working Student roles.",
   "target_roles": [
-    "Software Development Engineer",
-    "Software Engineer",
+    "Software Development Engineer II",
+    "Software Development Engineer 2",
+    "SDE II",
+    "SDE2",
+    "Software Development Engineer III",
+    "Software Development Engineer 3",
+    "SDE III",
+    "SDE3",
+    "Software Engineer II",
+    "Software Engineer 2",
+    "Software Engineer III",
+    "Software Engineer 3",
     "Backend Engineer",
     "Senior Backend Engineer",
     "Platform Engineer",
     "Senior Software Engineer",
     "Full Stack Engineer",
-    "Cloud Engineer"
+    "Senior Full Stack Engineer"
   ],
   "preferred_locations": [
     "Dublin",
     "Ireland",
-    "London",
-    "Edinburgh",
-    "United Kingdom",
     "Berlin",
     "Munich",
+    "Hamburg",
     "Germany",
     "Madrid",
     "Barcelona",
@@ -27,9 +37,53 @@
     "Sweden",
     "Amsterdam",
     "Netherlands",
+    "Paris",
+    "France",
+    "Lisbon",
+    "Portugal",
+    "Helsinki",
+    "Finland",
+    "Copenhagen",
+    "Denmark",
+    "Warsaw",
+    "Poland",
+    "Krakow",
+    "Prague",
+    "Czech",
+    "Vienna",
+    "Austria",
     "Remote Europe",
     "Remote - Europe",
-    "EMEA"
+    "Remote EU",
+    "European Union"
+  ],
+  "allowed_remote_keywords": [
+    "Remote Europe",
+    "Remote - Europe",
+    "Remote EU",
+    "Europe Remote",
+    "European Union",
+    "EU Remote"
+  ],
+  "blocked_locations": [
+    "London",
+    "United Kingdom",
+    "UK",
+    "England",
+    "Scotland",
+    "Wales",
+    "United States",
+    "USA",
+    "US Remote",
+    "Canada",
+    "India",
+    "Hyderabad",
+    "Bangalore",
+    "Bengaluru",
+    "Gurgaon",
+    "Mumbai",
+    "Singapore",
+    "Australia"
   ],
   "skills": {
     "core": [
@@ -63,16 +117,14 @@
   "must_have_signals": [
     "visa sponsorship",
     "relocation",
-    "hybrid",
-    "remote",
     "backend",
-    "platform"
+    "platform",
+    "EU"
   ],
   "visa_keywords": [
     "visa sponsorship",
     "sponsorship available",
     "work permit",
-    "skilled worker visa",
     "blue card",
     "eu blue card",
     "relocation support",
@@ -112,12 +164,21 @@
     "sales engineer",
     "solutions engineer"
   ],
-  "seniority_review_keywords": [
+  "blocked_title_keywords": [
     "staff",
     "principal",
     "director",
     "head of",
-    "vp"
+    "vp",
+    "manager",
+    "engineering manager",
+    "architect",
+    "distinguished",
+    "fellow",
+    "intern",
+    "graduate",
+    "working student",
+    "apprentice"
   ],
   "resume_versions": {
     "backend-platform": [
