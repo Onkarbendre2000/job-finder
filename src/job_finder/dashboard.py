@@ -22,9 +22,9 @@ def render_dashboard(scored_jobs: list[ScoredJob], path: Path, metadata: dict | 
     error_block = ""
     if errors:
         items = "".join(f"<li>{esc(error)}</li>" for error in errors[:20])
-        extra = "" if len(errors) <= 20 else f"<li>...and {len(errors) - 20} more source errors</li>"
+        extra = "" if len(errors) <= 20 else f"<li>...and {len(errors) - 20} more source warnings</li>"
         error_block = f"""
-        <details class=\"warnings\">
+        <details class=\"notice\">
           <summary>{len(errors)} source warnings</summary>
           <ul>{items}{extra}</ul>
         </details>
@@ -35,121 +35,331 @@ def render_dashboard(scored_jobs: list[ScoredJob], path: Path, metadata: dict | 
 <head>
   <meta charset=\"utf-8\" />
   <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />
-  <title>Job Finder Agent</title>
+  <title>Job Finder</title>
   <style>
     :root {{
-      color-scheme: dark;
-      --bg: #080a0f;
-      --panel: #111827;
-      --panel2: #0f172a;
-      --text: #e5e7eb;
-      --muted: #94a3b8;
-      --border: #1f2937;
-      --green: #34d399;
-      --yellow: #fbbf24;
-      --red: #f87171;
-      --blue: #60a5fa;
+      color-scheme: light;
+      --bg: #f7f7f5;
+      --surface: #ffffff;
+      --surface-muted: #fafafa;
+      --text: #151515;
+      --muted: #6f6f6f;
+      --border: #e7e5e4;
+      --border-strong: #d6d3d1;
+      --accent: #111111;
+      --green-bg: #ecfdf3;
+      --green-text: #067647;
+      --yellow-bg: #fffaeb;
+      --yellow-text: #b54708;
+      --red-bg: #fef3f2;
+      --red-text: #b42318;
+      --shadow: 0 18px 50px rgba(15, 23, 42, 0.06);
     }}
+
+    @media (prefers-color-scheme: dark) {{
+      :root {{
+        color-scheme: dark;
+        --bg: #0d0d0d;
+        --surface: #151515;
+        --surface-muted: #101010;
+        --text: #f5f5f4;
+        --muted: #a8a29e;
+        --border: #292524;
+        --border-strong: #44403c;
+        --accent: #ffffff;
+        --green-bg: rgba(6, 120, 73, 0.18);
+        --green-text: #86efac;
+        --yellow-bg: rgba(180, 83, 9, 0.18);
+        --yellow-text: #fcd34d;
+        --red-bg: rgba(180, 35, 24, 0.18);
+        --red-text: #fca5a5;
+        --shadow: none;
+      }}
+    }}
+
     * {{ box-sizing: border-box; }}
+
     body {{
       margin: 0;
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: radial-gradient(circle at top left, rgba(96,165,250,0.18), transparent 35%), var(--bg);
+      background: var(--bg);
       color: var(--text);
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      -webkit-font-smoothing: antialiased;
     }}
-    header {{ padding: 48px 28px 24px; max-width: 1280px; margin: 0 auto; }}
-    h1 {{ margin: 0; font-size: clamp(32px, 5vw, 56px); letter-spacing: -0.05em; }}
-    .subtitle {{ color: var(--muted); font-size: 16px; max-width: 760px; line-height: 1.6; }}
-    .stats {{ display: grid; grid-template-columns: repeat(4, minmax(140px, 1fr)); gap: 14px; margin-top: 28px; }}
-    .stat {{ background: rgba(17,24,39,0.82); border: 1px solid var(--border); padding: 18px; border-radius: 18px; }}
-    .stat strong {{ display:block; font-size: 30px; }}
-    .stat span {{ color: var(--muted); font-size: 13px; }}
-    main {{ max-width: 1280px; margin: 0 auto; padding: 0 28px 48px; }}
-    .toolbar {{ display: flex; justify-content: space-between; align-items: center; gap: 12px; margin: 20px 0; flex-wrap: wrap; }}
-    input, select {{
-      background: var(--panel);
+
+    .page {{
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 40px 24px 56px;
+    }}
+
+    header {{
+      display: grid;
+      gap: 22px;
+      margin-bottom: 26px;
+    }}
+
+    .eyebrow {{
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }}
+
+    h1 {{
+      margin: 0;
+      max-width: 760px;
+      font-size: clamp(34px, 5vw, 64px);
+      line-height: 0.98;
+      letter-spacing: -0.055em;
+      font-weight: 760;
+    }}
+
+    .subtitle {{
+      margin: 0;
+      max-width: 700px;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.65;
+    }}
+
+    .meta {{
+      color: var(--muted);
+      font-size: 13px;
+    }}
+
+    .stats {{
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 8px;
+    }}
+
+    .stat {{
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 18px;
+      box-shadow: var(--shadow);
+    }}
+
+    .stat strong {{
+      display: block;
+      font-size: 28px;
+      letter-spacing: -0.04em;
+      margin-bottom: 4px;
+    }}
+
+    .stat span {{
+      color: var(--muted);
+      font-size: 13px;
+    }}
+
+    .notice {{
+      margin: 20px 0;
+      padding: 14px 16px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: var(--surface);
+      color: var(--muted);
+      font-size: 13px;
+    }}
+
+    .notice summary {{
+      cursor: pointer;
       color: var(--text);
+      font-weight: 650;
+    }}
+
+    .toolbar {{
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      margin: 22px 0 14px;
+    }}
+
+    .filters {{
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }}
+
+    input,
+    select {{
+      height: 42px;
+      min-width: 230px;
       border: 1px solid var(--border);
       border-radius: 12px;
-      padding: 12px 14px;
-      min-width: 210px;
+      background: var(--surface);
+      color: var(--text);
+      padding: 0 13px;
+      font: inherit;
+      outline: none;
     }}
-    .table-wrap {{ overflow-x: auto; border: 1px solid var(--border); border-radius: 20px; background: rgba(15,23,42,0.76); }}
-    table {{ width: 100%; border-collapse: collapse; min-width: 1050px; }}
-    th, td {{ padding: 14px 14px; border-bottom: 1px solid var(--border); text-align: left; vertical-align: top; }}
-    th {{ position: sticky; top: 0; background: var(--panel2); z-index: 1; color: #cbd5e1; font-size: 12px; text-transform: uppercase; letter-spacing: .08em; }}
-    td {{ font-size: 14px; }}
-    tr:hover {{ background: rgba(96,165,250,0.08); }}
-    a {{ color: var(--blue); text-decoration: none; }}
+
+    input:focus,
+    select:focus {{
+      border-color: var(--accent);
+    }}
+
+    .table-card {{
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }}
+
+    .table-wrap {{
+      overflow-x: auto;
+    }}
+
+    table {{
+      width: 100%;
+      min-width: 1000px;
+      border-collapse: collapse;
+    }}
+
+    th,
+    td {{
+      padding: 15px 16px;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+      vertical-align: top;
+    }}
+
+    th {{
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      background: var(--surface-muted);
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }}
+
+    td {{
+      font-size: 14px;
+      line-height: 1.45;
+    }}
+
+    tr:last-child td {{ border-bottom: none; }}
+    tr:hover td {{ background: var(--surface-muted); }}
+
+    a {{
+      color: var(--text);
+      text-decoration: none;
+      font-weight: 650;
+    }}
+
     a:hover {{ text-decoration: underline; }}
-    .pill {{ display:inline-flex; align-items:center; border-radius: 999px; padding: 4px 9px; font-size: 12px; font-weight: 700; }}
-    .APPLY {{ background: rgba(52,211,153,.14); color: var(--green); }}
-    .REVIEW {{ background: rgba(251,191,36,.16); color: var(--yellow); }}
-    .SKIP {{ background: rgba(248,113,113,.14); color: var(--red); }}
-    .score {{ font-weight: 800; font-size: 16px; }}
+
+    .badge {{
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      padding: 4px 9px;
+      font-size: 11px;
+      font-weight: 750;
+      letter-spacing: .03em;
+    }}
+
+    .APPLY {{ background: var(--green-bg); color: var(--green-text); }}
+    .REVIEW {{ background: var(--yellow-bg); color: var(--yellow-text); }}
+    .SKIP {{ background: var(--red-bg); color: var(--red-text); }}
+
+    .score {{
+      font-variant-numeric: tabular-nums;
+      font-weight: 760;
+      font-size: 15px;
+    }}
+
     .muted {{ color: var(--muted); }}
-    .reasons {{ max-width: 420px; color: #cbd5e1; line-height: 1.45; }}
-    .warnings {{ margin: 18px 0; color: var(--yellow); background: rgba(251,191,36,.08); padding: 12px 16px; border: 1px solid rgba(251,191,36,.2); border-radius: 14px; }}
-    footer {{ color: var(--muted); font-size: 12px; margin-top: 18px; }}
-    @media (max-width: 800px) {{ .stats {{ grid-template-columns: repeat(2, 1fr); }} }}
+    .company {{ font-weight: 680; }}
+    .role {{ max-width: 300px; }}
+    .reasons {{ max-width: 390px; color: var(--muted); }}
+    .resume {{ white-space: nowrap; color: var(--muted); }}
+
+    @media (max-width: 760px) {{
+      .page {{ padding: 28px 16px 40px; }}
+      .stats {{ grid-template-columns: repeat(2, minmax(0, 1fr)); }}
+      input, select {{ width: 100%; min-width: 0; }}
+      .filters {{ width: 100%; }}
+    }}
   </style>
 </head>
 <body>
-  <header>
-    <h1>Job Finder Agent</h1>
-    <p class=\"subtitle\">Ranked software engineering roles from public ATS feeds. Use this dashboard to pick high-signal roles, then apply manually with a tailored resume.</p>
-    <div class=\"stats\">
-      <div class=\"stat\"><strong>{total}</strong><span>Total roles scanned</span></div>
-      <div class=\"stat\"><strong>{apply_count}</strong><span>Apply now</span></div>
-      <div class=\"stat\"><strong>{review_count}</strong><span>Worth review</span></div>
-      <div class=\"stat\"><strong>{skip_count}</strong><span>Skip</span></div>
-    </div>
-    <footer>Generated at {esc(updated_at)} UTC. Showing top 300 rows.</footer>
-  </header>
-  <main>
+  <div class=\"page\">
+    <header>
+      <div class=\"eyebrow\">EU · SDE2/SDE3 · Ranked roles</div>
+      <h1>Job Finder</h1>
+      <p class=\"subtitle\">A focused shortlist of software engineering roles from public ATS feeds. Review the high-signal matches first; skip the noise.</p>
+      <div class=\"meta\">Generated {esc(updated_at)} UTC · Showing top 300 rows</div>
+      <section class=\"stats\" aria-label=\"Job statistics\">
+        <div class=\"stat\"><strong>{total}</strong><span>Total scanned</span></div>
+        <div class=\"stat\"><strong>{apply_count}</strong><span>Apply</span></div>
+        <div class=\"stat\"><strong>{review_count}</strong><span>Review</span></div>
+        <div class=\"stat\"><strong>{skip_count}</strong><span>Skip</span></div>
+      </section>
+    </header>
+
     {error_block}
+
     <div class=\"toolbar\">
-      <input id=\"search\" placeholder=\"Search company, role, location...\" />
-      <select id=\"decision\">
-        <option value=\"\">All decisions</option>
-        <option value=\"APPLY\">APPLY</option>
-        <option value=\"REVIEW\">REVIEW</option>
-        <option value=\"SKIP\">SKIP</option>
-      </select>
+      <div class=\"filters\">
+        <input id=\"search\" placeholder=\"Search company, role, location\" />
+        <select id=\"decision\" aria-label=\"Filter by decision\">
+          <option value=\"\">All decisions</option>
+          <option value=\"APPLY\">Apply</option>
+          <option value=\"REVIEW\">Review</option>
+          <option value=\"SKIP\">Skip</option>
+        </select>
+      </div>
     </div>
-    <div class=\"table-wrap\">
-      <table id=\"jobs\">
-        <thead>
-          <tr>
-            <th>Decision</th>
-            <th>Score</th>
-            <th>Company</th>
-            <th>Role</th>
-            <th>Location</th>
-            <th>Resume</th>
-            <th>Reasons</th>
-          </tr>
-        </thead>
-        <tbody>
-          {rows}
-        </tbody>
-      </table>
-    </div>
-  </main>
+
+    <section class=\"table-card\">
+      <div class=\"table-wrap\">
+        <table id=\"jobs\">
+          <thead>
+            <tr>
+              <th>Decision</th>
+              <th>Score</th>
+              <th>Company</th>
+              <th>Role</th>
+              <th>Location</th>
+              <th>Resume</th>
+              <th>Why</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+
 <script>
 const search = document.getElementById('search');
 const decision = document.getElementById('decision');
 const rows = [...document.querySelectorAll('#jobs tbody tr')];
+
 function filterRows() {{
   const q = search.value.toLowerCase().trim();
   const d = decision.value;
   rows.forEach(row => {{
     const text = row.innerText.toLowerCase();
     const decisionValue = row.dataset.decision;
-    const show = (!q || text.includes(q)) && (!d || decisionValue === d);
-    row.style.display = show ? '' : 'none';
+    row.style.display = (!q || text.includes(q)) && (!d || decisionValue === d) ? '' : 'none';
   }});
 }}
+
 search.addEventListener('input', filterRows);
 decision.addEventListener('change', filterRows);
 </script>
@@ -161,17 +371,17 @@ decision.addEventListener('change', filterRows);
 
 def render_row(scored: ScoredJob) -> str:
     row = scored.to_dict()
-    reasons = "<br>".join(esc(reason) for reason in row["reasons"][:4])
+    reasons = "<br>".join(esc(reason) for reason in row["reasons"][:3])
     title = esc(row["title"])
     url = esc(row["url"])
     return f"""
     <tr data-decision=\"{esc(row['decision'])}\">
-      <td><span class=\"pill {esc(row['decision'])}\">{esc(row['decision'])}</span></td>
+      <td><span class=\"badge {esc(row['decision'])}\">{esc(row['decision'])}</span></td>
       <td class=\"score\">{row['match_score']}</td>
-      <td>{esc(row['company'])}<br><span class=\"muted\">{esc(row['source'])}</span></td>
-      <td><a href=\"{url}\" target=\"_blank\" rel=\"noopener noreferrer\">{title}</a></td>
+      <td><div class=\"company\">{esc(row['company'])}</div><span class=\"muted\">{esc(row['source'])}</span></td>
+      <td class=\"role\"><a href=\"{url}\" target=\"_blank\" rel=\"noopener noreferrer\">{title}</a></td>
       <td>{esc(row['location'])}</td>
-      <td>{esc(row['resume_version'])}</td>
+      <td class=\"resume\">{esc(row['resume_version'])}</td>
       <td class=\"reasons\">{reasons}</td>
     </tr>
     """
