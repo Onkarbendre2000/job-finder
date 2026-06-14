@@ -10,6 +10,8 @@ class Source:
     type: str
     slug: str
     priority: int = 3
+    enabled: bool = True
+    notes: str = ""
 
 
 @dataclass
