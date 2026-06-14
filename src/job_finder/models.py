@@ -8,10 +8,20 @@ from typing import Any
 class Source:
     company: str
     type: str
-    slug: str
+    slug: str = ""
     priority: int = 3
     enabled: bool = True
     notes: str = ""
+
+    # Optional fields for non-Greenhouse/Lever/Ashby sources.
+    # SmartRecruiters usually uses `slug` as the company identifier.
+    # Workday needs host + tenant + site.
+    # Teamtailor/company_careers need careers_url.
+    host: str = ""
+    tenant: str = ""
+    site: str = ""
+    careers_url: str = ""
+    max_pages: int = 3
 
 
 @dataclass
