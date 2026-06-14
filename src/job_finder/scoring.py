@@ -21,7 +21,9 @@ def score_job(job: Job, profile: dict, priority_by_key: dict[tuple[str, str], in
     location_text = job.location
 
     blocked = find_matches(text, profile.get("blocked_keywords", []))
-    seniority_review = find_matches(title_text, profile.get("seniority_review_keywords", []))
+    blocked_title = find_matches(title_text, profile.get("blocked_title_keywords", []))
+    blocked_location = find_matches(location_text, profile.get("blocked_locations", []))
+    allowed_location = has_allowed_location(location_text, text, profile)
 
     title_score, title_reason = score_title(title_text, profile.get("target_roles", []), weights.get("title", 25))
     skill_score, matched_skills = score_skills(text, profile, weights.get("skills", 35))
@@ -45,15 +47,22 @@ def score_job(job: Job, profile: dict, priority_by_key: dict[tuple[str, str], in
     if company_score:
         reasons.append(f"Company priority score: {company_score}")
 
+    hard_blocks: list[str] = []
     if blocked:
+        hard_blocks.append("Blocked keyword: " + ", ".join(blocked[:3]))
+    if blocked_title:
+        hard_blocks.append("Blocked seniority/title: " + ", ".join(blocked_title[:3]))
+    if blocked_location:
+        hard_blocks.append("Blocked non-EU location: " + ", ".join(blocked_location[:3]))
+    if profile.get("eu_only", False) and not allowed_location:
+        hard_blocks.append("Location is not clearly EU/Remote-Europe")
+
+    if hard_blocks:
         raw_score = min(raw_score, 39)
-        reasons.insert(0, "Blocked keyword: " + ", ".join(blocked[:3]))
-    elif seniority_review:
-        raw_score = min(raw_score, 64)
-        reasons.insert(0, "Seniority review needed: " + ", ".join(seniority_review[:3]))
+        reasons = hard_blocks + reasons
 
     match_score = max(0, min(100, int(round(raw_score))))
-    decision = decision_for_score(match_score, thresholds, blocked)
+    decision = decision_for_score(match_score, thresholds, hard_blocks)
     resume_version = choose_resume_version(text, profile.get("resume_versions", {}))
 
     return ScoredJob(
@@ -120,17 +129,37 @@ def score_location(location: str, text: str, preferred_locations: list[str], max
     haystack = f"{location}\n{text}"
     matches = find_matches(haystack, preferred_locations)
     if matches:
-        return max_points, "Preferred location: " + ", ".join(matches[:3])
+        return max_points, "Preferred EU location: " + ", ".join(matches[:3])
 
     lowered = norm(haystack)
-    if "remote" in lowered and any("europe" in norm(loc) or "emea" in norm(loc) for loc in preferred_locations):
-        return int(max_points * 0.8), "Remote role with possible Europe/EMEA relevance"
-    if "europe" in lowered or "emea" in lowered:
-        return int(max_points * 0.8), "Europe/EMEA location signal"
-    if any(country in lowered for country in ["india", "hyderabad", "bengaluru", "bangalore"]):
-        return int(max_points * 0.2), "India location; relocation goal mismatch"
+    if "remote" in lowered and "europe" in lowered:
+        return int(max_points * 0.8), "Remote Europe location signal"
+    if "europe" in lowered:
+        return int(max_points * 0.8), "Europe location signal"
 
-    return int(max_points * 0.35), "Location not clearly in target list"
+    return 0, "Location not clearly EU"
+
+
+def has_allowed_location(location: str, text: str, profile: dict) -> bool:
+    preferred_locations = profile.get("preferred_locations", [])
+    if find_matches(location, preferred_locations):
+        return True
+
+    allowed_remote_keywords = profile.get("allowed_remote_keywords", [])
+    if find_matches(location, allowed_remote_keywords):
+        return True
+
+    lowered_location = norm(location)
+    if "remote" in lowered_location and "europe" in lowered_location:
+        return True
+
+    # Some ATS feeds keep office/location in the description instead of the location field.
+    # Use this as a fallback only when the location field is empty or vague.
+    vague_location = not lowered_location or lowered_location in {"remote", "hybrid", "multiple locations"}
+    if vague_location and (find_matches(text, preferred_locations) or find_matches(text, allowed_remote_keywords)):
+        return True
+
+    return False
 
 
 def score_visa(text: str, profile: dict, max_points: int) -> tuple[int, list[str], list[str]]:
@@ -165,8 +194,8 @@ def score_company(job: Job, priority_by_key: dict[tuple[str, str], int], max_poi
     return int(round((priority / 5) * max_points))
 
 
-def decision_for_score(score: int, thresholds: dict, blocked: list[str]) -> str:
-    if blocked:
+def decision_for_score(score: int, thresholds: dict, hard_blocks: list[str]) -> str:
+    if hard_blocks:
         return "SKIP"
     if score >= int(thresholds.get("apply", 70)):
         return "APPLY"
