@@ -44,7 +44,7 @@ outputs/index.html
 
 ## GitHub Actions
 
-The included workflow runs daily at `03:30 UTC` and also supports manual runs from the Actions tab.
+The included workflow runs daily at `03:30 UTC`, runs on every push to `main`, and also supports manual runs from the Actions tab.
 
 To enable the hosted dashboard:
 
